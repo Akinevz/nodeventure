@@ -29,51 +29,21 @@ object Raytracer {
       canvasWidth: Double,
       canvasHeight: Double
   ): Unit = {
-    val playerPos = player.pos
-    val playerDir = player.dir
-    // Calculate the angles and distances to the walls
-    val startAngle = (wall.start - playerPos).toAngle - playerDir.toAngle
-    val endAngle = (wall.end - playerPos).toAngle - playerDir.toAngle
-    val centerAngle = (startAngle + endAngle) / 2
-    val distance =
-      (wall.start - playerPos).length * math.cos(centerAngle.toRadians)
-
-    val fov = player.FOV
-    val resolution = 800
-    val maxDepth = 600
-    val gazePos = playerPos
     // Calculate the x positions of the start and end points of the wall
-    val startX = ((startAngle / fov + 0.5) * resolution).toInt
-    val endX = ((endAngle / fov + 0.5) * resolution).toInt
 
     // Calculate the height of the wall on the screen
-    val wallHeight = (maxDepth / distance * canvasHeight).toInt
 
     // Set the fill color to the wall's color
-    ctx.fillStyle = wall.color.toString
 
     // Loop over the columns of the wall and render them
-    for (x <- startX to endX) {
-      // Calculate the level of detail for this column
-      val distanceToGaze = (wall.center - playerPos).length
-      val distanceToColumn = (Vector2D(
-          x.toDouble / resolution - 0.5,
-          0
-      ) - playerDir).length * distance
-      val detailLevel = distanceToGaze / distanceToColumn
-
-      // If the level of detail is below a certain threshold, skip rendering this column
-      if (detailLevel < 0.5) {
-        ctx.fillRect(x, canvasHeight / 2 - wallHeight / 2, 1, wallHeight)
-      }
-    }
+    
   }
 
   def renderDungeon(
       canvas: Canvas,
       dungeon: Dungeon
   ): Unit = {
-    val ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+    val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
     // val planeDist = 0.5 * canvas.width / math.tan(dungeon.player.FOV / 2)
 
     for (room <- dungeon.rooms)
